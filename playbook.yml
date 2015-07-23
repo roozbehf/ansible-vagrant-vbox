@@ -1,0 +1,25 @@
+---
+- hosts: server
+  tasks:
+    - name: install apache
+      apt: pkg=apache2 state=installed update_cache=true
+      notify:
+        - start apache
+
+  handlers:
+   - name: start apache
+     service: name=apache2 state=started
+
+- hosts: client
+  tasks:
+    - name: copy the ping server script
+      copy: >
+        src=scripts/ping_server.sh
+        dest=/usr/bin/ping_server.sh
+        mode="ugo+x"
+
+    - name: copy the ping apache script
+      copy: >
+        src=scripts/ping_apache.sh
+        dest=/usr/bin/ping_apache.sh
+        mode="ugo+x"
